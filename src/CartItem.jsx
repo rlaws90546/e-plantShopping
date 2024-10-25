@@ -12,15 +12,14 @@ const CartItem = ({ onContinueShopping }) => {
     const calculateTotalAmount = () => {
         let totalCost = 0;
         cart.forEach(item => {
-            totalCost += item.cost * item.quantity;
+            const priceNum = parseFloat(item.cost.replace('$', ''));
+            totalCost += priceNum * item.quantity;
         });
         return totalCost;
     };
 
     const handleContinueShopping = (e) => {
-        console.log("How on earth do i do this... trying to continue shopping");
-        e.preventDefault();
-        onContinueShopping = true;
+        onContinueShopping(e);
     };
 
     const handleCheckoutShopping = (e) => {
@@ -28,22 +27,25 @@ const CartItem = ({ onContinueShopping }) => {
     };
 
     const handleIncrement = (item) => {
-        dispatch(updateQuantity(item, item.quantity + 1));
+        dispatch(updateQuantity({name: item.name, quantity: item.quantity + 1}));
     };
 
     const handleDecrement = (item) => {
-        if (item.quantity > 1)
-            dispatch(updateQuantity(item, item.quantity - 1));
-        else
-            handleRemove(item);
+        if (item.quantity > 1) {
+            dispatch(updateQuantity({name: item.name, quantity: item.quantity - 1}));
+        } else {
+            dispatch(removeItem(item.name));
+        }
     };
 
     const handleRemove = (item) => {
-        dispatch(removeItem(item));
+        dispatch(removeItem(item.name));
     };
 
     // Calculate total cost based on quantity for an item
     const calculateTotalCost = (item) => {
+        const priceNum = parseFloat(item.cost.replace('$', ''));
+        return priceNum * item.quantity;
     };
 
     return (
